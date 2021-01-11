@@ -1,0 +1,170 @@
+local Client = game:GetService("Players").LocalPlayer
+local mainConfig = _G.Configuration
+
+_G.modGun = function(Module)
+    local s = require(Module)
+
+	for i,v in pairs(mainConfig.MainSettings) do
+		s[i] = v
+	end
+
+    s.ReloadTime = 0 --In seconds
+    s.EquipTime = 0 --In seconds
+
+    s.GoreEffectEnabled = not (mainConfig.OtherSettings.PerformanceMode)
+    s.GoreSoundIDs = mainConfig.Sounds.Enabled and mainConfig.Sounds.HitSoundEffects or {}
+    s.GoreSoundPitchMin = mainConfig.Sounds.PitchMin --Minimum pitch factor you will acquire
+    s.GoreSoundPitchMax = mainConfig.Sounds.PitchMax --Maximum pitch factor you will acquire
+    s.GoreSoundVolume = mainConfig.Sounds.Volume
+
+    s.WalkSpeedRedutionEnabled = false
+
+    s.BulletHoleEnabled = mainConfig.Textures.Enabled
+    s.BulletHoleSize = mainConfig.Textures.TextureSize
+    s.BulletHoleTexture = mainConfig.Textures.Enabled and mainConfig.Textures.BulletHoleTextures or {} --You can insert more IDs
+    s.BulletHoleVisibleTime = 2e18 --In second
+    s.PartColor = false --Set to hit object color
+
+    s.HitEffectEnabled = not (mainConfig.OtherSettings.PerformanceMode)
+    s.HitSoundIDs = mainConfig.Sounds.Enabled and mainConfig.Sounds.HitSoundEffects or {}
+    s.HitSoundPitchMin = mainConfig.Sounds.PitchMin --Minimum pitch factor you will acquire
+    s.HitSoundPitchMax = mainConfig.Sounds.PitchMax --Maximum pitch factor you will acquire
+    s.HitSoundVolume = mainConfig.Sounds.Volume
+    s.CustomHitEffect = true --Emits your custom hit effect. NOTE: If you this setting disabled, hit effect will set to default(material tracker included)
+
+    s.BloodEnabled = not (mainConfig.OtherSettings.PerformanceMode)
+    s.HitCharSndIDs = mainConfig.Sounds.Enabled and mainConfig.Sounds.HitSoundEffects or {}
+    s.HitCharSndPitchMin = mainConfig.Sounds.PitchMin
+    s.HitCharSndPitchMax = mainConfig.Sounds.PitchMax
+    s.HitCharSndVolume = mainConfig.Sounds.Volume
+
+    s.BloodWoundEnabled = not (mainConfig.OtherSettings.PerformanceMode)
+    s.BloodWoundTexture = mainConfig.Textures.Enabled and mainConfig.Textures.BulletHoleTextures or {} --You can insert more IDs
+    s.BloodWoundTextureColor = Color3.fromRGB(255, 255, 255)
+
+    s.CrossSize = 10
+    s.CrossExpansion = 0
+    s.CrossSpeed = 15
+    s.CrossDamper = 0.8
+
+    s.IronsightEnabled = true --NOTE: If "SniperEnabled" is enabled, this setting is not work
+    s.FieldOfViewIS = 50
+    s.MouseSensitiveIS = 0.2 --In percent
+    s.SpreadRedutionIS = 0.9 --In percent. NOTE: Must be the same value as "SpreadRedutionS"
+    s.SpreadRedutionS = s.SpreadRedutionIS
+    s.CrossScaleIS = 0.2
+
+    s.LimitedAmmoEnabled = false
+    s.Ammo = 2e9
+    s.MaxAmmo = 2e9 --Put "math.huge" to allow user to carry unlimited ammo
+    s.AmmoPerMag = 2e9 --Put "math.huge" to make this gun has infinite ammo and never reload
+    s.AutoReload = true --Reload automatically when you run out of mag; disabling it will make you reload manually
+
+    s.ShotgunEnabled = mainConfig.MainSettings.ShotgunMode
+	if mainConfig.OtherSettings.PerformanceMode then
+		s.BulletPerShot = mainConfig.MainSettings.ShotgunBullets / 2
+	else
+		s.BulletPerShot = mainConfig.MainSettings.ShotgunBullets
+	end
+
+    s.ExplosiveEnabled = mainConfig.MainSettings.ExplosiveMode
+    s.ExplosionSoundEnabled = true
+    s.ExplosionSoundIDs = mainConfig.Sounds.Enabled and mainConfig.Sounds.HitSoundEffects or {}
+    s.ExplosionSoundVolume = mainConfig.Sounds.Volume
+    s.ExplosionSoundPitchMin = mainConfig.Sounds.PitchMin --Minimum pitch factor you will acquire
+    s.ExplosionSoundPitchMax = mainConfig.Sounds.PitchMax --Maximum pitch factor you will acquire
+    s.ExplosionRadius = mainConfig.MainSettings.ExplosionRadius
+    s.DamageBasedOnDistance = false
+    s.CustomExplosion = not (mainConfig.OtherSettings.PerformanceMode)
+    s.ExplosionKnockback = true --Enable the explosion to knockback player. Useful for rocket jumping
+    s.ExplosionKnockbackPower = mainConfig.MainSettings.ExplosionKnockback
+    s.ExplosionKnockbackMultiplierOnPlayer = 0
+    s.ExplosionKnockbackMultiplierOnTarget = 2
+    s.ExplosionCraterEnabled = mainConfig.Textures.Enabled
+    s.ExplosionCraterSize = mainConfig.Textures.TextureSize
+    s.ExplosionCraterTexture = mainConfig.Textures.Enabled and mainConfig.Textures.BulletHoleTextures or {}
+    s.ExplosionCraterVisibleTime = 2e9 --In second
+    s.ExplosionCraterFadeTime = 1 --In second
+    s.ExplosionCraterPartColor = false --Set to hit object color
+
+    s.BulletSpeed = 24000
+    s.CanSpinPart = false
+
+    s.PenetrationType = "WallPenetration" --2 types: "WallPenetration" and "HumanoidPenetration"
+    s.PenetrationDepth = 2000000 --"WallPenetraion" only. This is how many studs a bullet can penetrate into a wall. So if penetration is 0.5 and the wall is 1 studs thick, the bullet won't come out the other side. NOTE: It doesn't work with "ExplosiveEnabled"
+    s.PenetrationAmount = 1000 --"HumanoidPenetration" only. Setting above 0 will enabling the gun to penetrate up to XX victim(s). Cannot penetrate wall. NOTE: It doesn't work with "ExplosiveEnabled"
+
+    if mainConfig.RiskyMode then
+        s.IgniteChance = 100
+		s.IcifyChance = 100
+
+		for i,v in pairs(mainConfig.RiskySettings) do
+			s[i] = v
+		end
+	end
+
+	s.ShotgunPump = false
+    s.ShotgunReload = false
+    s.ShotgunPattern = false
+    s.BurstFireEnabled = false
+    s.SelectiveFireEnabled = false
+	s.CameraRecoilingEnabled = false
+	s.BulletShellEnabled = false
+	s.SelfKnockback = false
+    s.MuzzleFlashEnabled = false
+    s.MuzzleLightEnabled = false
+    s.WhizSoundEnabled = false
+    s.InspectAnimationEnabled = false
+    s.TacticalReloadAnimationEnabled = false
+    s.MinigunEnabled = false
+    s.SilenceEffect = false
+    s.EchoEffect = false
+    s.LowAmmo = false
+    s.RaisePitch = false
+	s.DamageDropOffEnabled = false
+	s.SmokeTrailEnabled = false
+    s.SecondaryFireAnimationEnabled = false
+    s.AimAnimationsEnabled = false
+
+    return
+end
+
+local function Mod(Child)
+    pcall(function()
+        if Child:FindFirstChild("Setting") then
+            game:GetService("RunService").RenderStepped:Wait()
+            _G.modGun(Child.Setting)
+            local MainScript = Child.GunScript_Local
+
+            MainScript.Disabled = true
+            if not MainScript:FindFirstChild("GunGUI") then
+                Client.PlayerGui:FindFirstChild("GunGUI").Parent = MainScript
+            end
+            MainScript.Disabled = false
+        end
+    end)
+end
+
+local ChildAdded
+
+local function Character(Char)
+    if ChildAdded and ChildAdded.Connected then
+        ChildAdded:Disconnect()
+    end
+    ChildAdded = Char.ChildAdded:Connect(function(Child)
+        Mod(Child)
+    end)
+end
+
+Character(Client.Character or Client.CharacterAdded:Wait())
+Client.CharacterAdded:Connect(Character)
+
+local SS = game:GetService("ReplicatedStorage"):FindFirstChild("SecureSettings", true)
+
+if SS then
+    SS:Clone().Parent = SS.Parent
+    SS:Destroy()
+    return true
+end
+
+return false
