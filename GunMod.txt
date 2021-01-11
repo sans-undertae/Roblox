@@ -114,8 +114,6 @@ _G.modGun = function(Module)
     s.MuzzleFlashEnabled = false
     s.MuzzleLightEnabled = false
     s.WhizSoundEnabled = false
-    s.InspectAnimationEnabled = false
-    s.TacticalReloadAnimationEnabled = false
     s.MinigunEnabled = false
     s.SilenceEffect = false
     s.EchoEffect = false
@@ -123,8 +121,6 @@ _G.modGun = function(Module)
     s.RaisePitch = false
 	s.DamageDropOffEnabled = false
 	s.SmokeTrailEnabled = false
-    s.SecondaryFireAnimationEnabled = false
-    s.AimAnimationsEnabled = false
 
     return
 end
